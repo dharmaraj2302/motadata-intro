@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motadata Pre-Sales &amp; Sales — TN, KL &amp; Hyderabad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1220;
+    --panel: #121B2E;
+    --panel-hi: #16223A;
+    --line: #223350;
+    --signal: #2DD4C6;
+    --signal-dim: rgba(45,212,198,0.18);
+    --amber: #F0A93E;
+    --text: #E7ECF6;
+    --muted: #8A99B5;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(45,212,198,0.06), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(240,169,62,0.05), transparent 40%);
+  }
+
+  .wrap{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  header{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 56px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 32px;
+  }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--signal);
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width: 7px; height:7px;
+    background: var(--signal);
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px var(--signal-dim);
+    display:inline-block;
+  }
+  h1{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(28px, 4vw, 42px);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .subtitle{
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px;
+    line-height: 1.5;
+  }
+
+  /* Topology map */
+  .topology{
+    position: relative;
+    margin-bottom: 64px;
+  }
+  .topo-svg{
+    width: 100%;
+    height: auto;
+    display:block;
+  }
+  .node-region{
+    font-family: var(--mono);
+    font-size: 11px;
+    fill: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 860px){
+    .grid{ grid-template-columns: 1fr; }
+  }
+
+  .card{
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 26px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .25s ease, transform .25s ease;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--signal), transparent 70%);
+    opacity: 0.7;
+  }
+  .card:hover{
+    border-color: var(--signal);
+    transform: translateY(-2px);
+  }
+
+  .card-head{
+    display:flex;
+    justify-content: space-between;
+    align-items:flex-start;
+    margin-bottom: 18px;
+  }
+  .node-id{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--signal);
+    letter-spacing: 0.08em;
+  }
+  .status-dot{
+    width: 8px; height:8px;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 6px 1px var(--signal-dim);
+    margin-top: 4px;
+  }
+
+  .name{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0 0 4px;
+  }
+  .role{
+    color: var(--amber);
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 20px;
+  }
+
+  .field{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 14px;
+  }
+  .field-label{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .field-value{
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--text);
+    word-break: break-word;
+  }
+  .field-value a{
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: color .2s, border-color .2s;
+  }
+  .field-value a:hover{
+    color: var(--signal);
+    border-color: var(--signal);
+  }
+
+  .locations{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .loc-chip{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    padding: 3px 9px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    color: var(--muted);
+  }
+
+  footer{
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Contact form */
+  .form-section{
+    margin-top: 64px;
+    padding-top: 8px;
+  }
+  .form-head{
+    margin-bottom: 24px;
+  }
+  .form-head h2{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 6px;
+  }
+  .form-head p{
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .form-card{
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-card::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--amber), transparent 70%);
+    opacity: 0.7;
+  }
+
+  .form-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 640px){
+    .form-grid{ grid-template-columns: 1fr; }
+  }
+
+  .form-field{
+    display:flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .form-field.full{
+    grid-column: 1 / -1;
+  }
+  .form-field label{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .form-field input,
+  .form-field textarea{
+    background: #0E1729;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 11px 12px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+    resize: vertical;
+  }
+  .form-field input:focus,
+  .form-field textarea:focus{
+    border-color: var(--signal);
+  }
+  .form-field input::placeholder,
+  .form-field textarea::placeholder{
+    color: #52627F;
+  }
+
+  .form-footer{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 22px;
+  }
+
+  .submit-btn{
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    background: var(--signal);
+    color: #05201C;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background .2s, transform .2s;
+  }
+  .submit-btn:hover{ background: #45E0D3; }
+  .submit-btn:disabled{
+    background: #2B3A52;
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .form-status{
+    font-family: var(--mono);
+    font-size: 12px;
+    display:flex;
+    align-items:center;
+    gap: 7px;
+  }
+  .form-status .dot{
+    width: 7px; height:7px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .form-status.ok .dot{ background: var(--signal); box-shadow: 0 0 6px 1px var(--signal-dim); }
+  .form-status.err .dot{ background: #E85D5D; box-shadow: 0 0 6px 1px rgba(232,93,93,0.25); }
+  .form-status.ok{ color: var(--signal); }
+  .form-status.err{ color: #E85D5D; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Regional coverage online</div>
+    <h1>Motadata — Pre-Sales &amp; Sales Directory</h1>
+    <p class="subtitle">Direct contacts for the Tamil Nadu, Kerala &amp; Hyderabad region — ObserveOps and ServiceOps product lines.</p>
+  </header>
+
+  <div class="topology">
+    <svg class="topo-svg" viewBox="0 0 1052 160" xmlns="http://www.w3.org/2000/svg">
+      <!-- connecting lines from hub to each node -->
+      <line x1="526" y1="80" x2="176" y2="80" stroke="#223350" stroke-width="1.5"/>
+      <line x1="526" y1="80" x2="526" y2="80" stroke="#223350" stroke-width="1.5"/>
+      <line x1="526" y1="80" x2="876" y2="80" stroke="#223350" stroke-width="1.5"/>
+      <line x1="176" y1="80" x2="526" y2="80" stroke="#2DD4C6" stroke-width="1" stroke-dasharray="2 5" opacity="0.6"/>
+      <line x1="876" y1="80" x2="526" y2="80" stroke="#2DD4C6" stroke-width="1" stroke-dasharray="2 5" opacity="0.6"/>
+
+      <!-- hub -->
+      <circle cx="526" cy="80" r="5" fill="#F0A93E"/>
+      <circle cx="526" cy="80" r="11" fill="none" stroke="#F0A93E" stroke-width="1" opacity="0.4"/>
+      <text x="526" y="112" text-anchor="middle" class="node-region">TN &amp; KL REGION</text>
+
+      <!-- nodes -->
+      <circle cx="176" cy="80" r="4" fill="#2DD4C6"/>
+      <circle cx="176" cy="80" r="9" fill="none" stroke="#2DD4C6" stroke-width="1" opacity="0.4"/>
+      <text x="176" y="112" text-anchor="middle" class="node-region">CHENNAI · KERALA · HYD</text>
+
+      <circle cx="876" cy="80" r="4" fill="#2DD4C6"/>
+      <circle cx="876" cy="80" r="9" fill="none" stroke="#2DD4C6" stroke-width="1" opacity="0.4"/>
+      <text x="876" y="112" text-anchor="middle" class="node-region">BANGALORE</text>
+    </svg>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head">
+        <span class="node-id">NODE / 01</span>
+        <span class="status-dot"></span>
+      </div>
+      <p class="name">Dharmaraj</p>
+      <p class="role">Senior Pre-Sales Engineer</p>
+
+      <div class="field">
+        <span class="field-label">Email</span>
+        <span class="field-value"><a href="mailto:dharmaraj.s@motadata.com">dharmaraj.s@motadata.com</a></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Phone</span>
+        <span class="field-value"><a href="tel:+917826045947">+91 78260 45947</a></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Coverage</span>
+        <div class="locations">
+          <span class="loc-chip">Chennai</span>
+          <span class="loc-chip">Kerala</span>
+          <span class="loc-chip">Hyderabad</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="node-id">NODE / 02</span>
+        <span class="status-dot"></span>
+      </div>
+      <p class="name">Shivan Aiyappan</p>
+      <p class="role">Sales Region Head</p>
+
+      <div class="field">
+        <span class="field-label">Email</span>
+        <span class="field-value"><a href="mailto:sivan.ayyappan@motadata.com">sivan.ayyappan@motadata.com</a></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Phone</span>
+        <span class="field-value"><a href="tel:+917338885554">+91 73388 85554</a></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Coverage</span>
+        <div class="locations">
+          <span class="loc-chip">Chennai</span>
+          <span class="loc-chip">Kerala</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="node-id">NODE / 03</span>
+        <span class="status-dot"></span>
+      </div>
+      <p class="name">Diana Goswami</p>
+      <p class="role">Senior Pre-Sales Engineer</p>
+
+      <div class="field">
+        <span class="field-label">Email</span>
+        <span class="field-value"><a href="mailto:diana.goswami@motadata.com">diana.goswami@motadata.com</a></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Phone</span>
+        <span class="field-value"><a href="tel:+918017531584">+91 80175 31584</a></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Coverage</span>
+        <div class="locations">
+          <span class="loc-chip">Bangalore</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="form-section">
+    <div class="form-head">
+      <h2>Get in touch</h2>
+      <p>Share a few details and the right person from the team will reach out.</p>
+    </div>
+
+    <div class="form-card">
+      <form id="lead-form">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="company">Company name</label>
+            <input type="text" id="company" name="company" placeholder="Acme Corporation" required>
+          </div>
+          <div class="form-field">
+            <label for="fullname">Your name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Jane Doe" required>
+          </div>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="jane@acme.com" required>
+          </div>
+          <div class="form-field">
+            <label for="phone">Phone number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
+          </div>
+          <div class="form-field full">
+            <label for="message">Message (optional)</label>
+            <textarea id="message" name="message" rows="3" placeholder="What are you looking to solve?"></textarea>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button type="submit" class="submit-btn" id="submit-btn">Send inquiry</button>
+          <div class="form-status" id="form-status"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <span>Motadata Technologies Pvt. Ltd.</span>
+    <span>ObserveOps · ServiceOps</span>
+  </footer>
+
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+  // ⚠️ Replace these two values with your own Supabase project's details.
+  // Project Settings → API → Project URL / anon public key.
+  const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co'
+  const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY'
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  const form = document.getElementById('lead-form')
+  const statusEl = document.getElementById('form-status')
+  const submitBtn = document.getElementById('submit-btn')
+
+  function setStatus(kind, text){
+    statusEl.className = 'form-status ' + kind
+    statusEl.innerHTML = '<span class="dot"></span>' + text
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    submitBtn.disabled = true
+    setStatus('', 'Sending…')
+
+    const payload = {
+      company: document.getElementById('company').value.trim(),
+      full_name: document.getElementById('fullname').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      message: document.getElementById('message').value.trim() || null
+    }
+
+    const { error } = await supabase.from('leads').insert([payload])
+
+    if (error) {
+      console.error(error)
+      setStatus('err', 'Something went wrong. Please try again.')
+      submitBtn.disabled = false
+    } else {
+      setStatus('ok', 'Thanks — we\'ll be in touch shortly.')
+      form.reset()
+      submitBtn.disabled = false
+    }
+  })
+</script>
+
+</body>
+</html>
